@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>英文單字遊戲</title>
+</head>
+
+<body>
+    <h1>英文單字遊戲</h1>
+    <div id="word-display"></div>
+
+    <script>
+        const words = ["apple", "banana", "cherry", "dog", "elephant", "flower", "guitar", "house"];
+        let currentWord = "";
+        const wordDisplay = document.getElementById("word-display");
+        const inputWord = document.getElementById("input-word");
+        const submitButton = document.getElementById("submit-button");
+        let userInput = "";
+
+        function getRandomWord() {
+            return words[Math.floor(Math.random() * words.length)];
+        }
+
+        function displayNewWord() {
+            currentWord = getRandomWord();
+            wordDisplay.textContent = currentWord;
+        }
+
+        displayNewWord();
+
+        submitButton.addEventListener("click", function () {
+            const userWord = inputWord.value.toLowerCase();
+            if (userWord === currentWord) {
+                displayNewWord();
+                inputWord.value = "";
+            }
+        });
+
+        function updateUserInput() {
+            const remainingText = currentWord.slice(userInput.length);
+            wordDisplay.innerHTML = `<span style="color: red;">${userInput}</span>${remainingText}`;
+            if (currentWord === userInput) {
+                correctAnser();
+            }
+        }
+
+        function correctAnser() {
+            speakWord(currentWord);
+            displayNewWord();
+            resetGame();
+        }
+
+        function resetGame() {
+            userInput = "";
+            updateUserInput();
+        }
+
+        document.addEventListener("keydown", function (event) {
+            const key = event.key.toLowerCase();
+            const nextChar = currentWord[userInput.length];
+            if (key === nextChar) {
+                userInput += key;
+                updateUserInput();
+            } else {
+                resetGame();
+            }
+        });
+
+        function speakWord(word) {
+            const synth = window.speechSynthesis;
+            const utterance = new SpeechSynthesisUtterance(word);
+            synth.speak(utterance);
+        }
+    </script>
+</body>
+
+</html>
